@@ -5,6 +5,7 @@ import SoftwareSolutions from "./pages/SoftwareSolutions";
 import LanguageSelector from "./components/LanguageSelector";
 import HomeItalian from "./pages/HomeItalian";
 import Home from "./pages/Home";
+import KlarnaDashboard from "./pages/KlarnaDashboard";
 
 function AppRoutes({ lang, setLang }) {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function AppRoutes({ lang, setLang }) {
         <Route path="/" element={<Home />} />
         <Route path="/software-solutions" element={<SoftwareSolutions />} />
         <Route path="/it" element={<HomeItalian />} />
+        <Route path="/klarna-dashboard" element={<KlarnaDashboard />} />
       </Routes>
     </div>
   );

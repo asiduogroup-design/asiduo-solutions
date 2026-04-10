@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const handleChangeLanguage = () => {
   localStorage.removeItem("lang_pref");
@@ -6,6 +8,48 @@ const handleChangeLanguage = () => {
 };
 
 export default function HomeItalian() {
+  const [showWidget, setShowWidget] = useState(false);
+  const navigate = useNavigate();
+
+  const handleKlarnaPay = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/klarna/session");
+      const { client_token, session_id } = res.data;
+
+      setShowWidget(true);
+
+      // Wait for Klarna JS to be available
+      const waitForKlarna = () =>
+        new Promise((resolve) => {
+          if (window.Klarna) return resolve();
+          const interval = setInterval(() => {
+            if (window.Klarna) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 100);
+        });
+
+      await waitForKlarna();
+
+      window.Klarna.Payments.init({ client_token });
+      window.Klarna.Payments.load({
+        container: "#klarna-widget",
+        payment_method_category: "pay_later", // or "pay_now", "pay_over_time"
+        session_id,
+      });
+
+      // Simulate payment success (replace with real Klarna callback in production)
+      setTimeout(() => {
+        alert("Pagamento completato con successo! Navigazione alla dashboard...");
+        navigate("/klarna-dashboard");
+      }, 3000); // Simulate 3s delay for payment
+    } catch (err) {
+      alert("Errore durante l'integrazione Klarna");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100vh-64px)] bg-gradient-to-br from-yellow-200 via-pink-100 to-blue-200">
       <div className="text-center">
@@ -23,6 +67,23 @@ export default function HomeItalian() {
         >
           Cambia lingua / Change Language
         </button>
+        <br />
+        {/* Button to show Klarna widget and handle payment */}
+        <button
+          onClick={handleKlarnaPay}
+          className="mt-8 px-6 py-2 rounded-full bg-gradient-to-r from-yellow-400 via-pink-400 to-green-400 text-white font-bold shadow-lg hover:scale-105 transition-transform"
+        >
+          Paga con Klarna (Pagamento)
+        </button>
+        {/* Button to just navigate to dashboard */}
+        <button
+          onClick={() => navigate("/klarna-dashboard")}
+          className="mt-4 px-6 py-2 rounded-full bg-gradient-to-r from-green-400 via-yellow-400 to-pink-400 text-white font-bold shadow-lg hover:scale-105 transition-transform"
+        >
+          Vai alla Dashboard Klarna
+        </button>
+        {/* Klarna widget container */}
+        {showWidget && <div id="klarna-widget" className="mt-8"></div>}
       </div>
     </div>
   );

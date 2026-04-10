@@ -1,15 +1,33 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import AnimatedBar from "../components/AnimatedBar";
+import RevealText from "../components/RevealText";
 import featureContent from "../data/featureContent";
+import { useNavigate } from "react-router-dom";
 
 const SoftwareSolutions = () => {
   const [selected, setSelected] = useState("Custom Software Development");
   const content = featureContent[selected];
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col md:flex-row gap-8 p-8">
-      <Sidebar selected={selected} onSelect={setSelected} />
+      {/* Home icon inside main card, top-left */}
+      {/* Home icon above Features sidebar */}
+      <div className="relative">
+        <div className="bg-white shadow-lg rounded-lg p-4">
+          <div className="flex justify-center mb-2">
+            <span
+              className="inline-block cursor-pointer"
+              title="Back to Home"
+              onClick={() => navigate("/")}
+            >
+              <i className="fa-solid fa-house" style={{ color: 'orange', fontSize: '2rem' }}></i>
+            </span>
+          </div>
+          <Sidebar selected={selected} onSelect={setSelected} />
+        </div>
+      </div>
       <div className="flex-1 bg-white rounded-lg shadow-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         <div>
           <h2 className="text-3xl font-extrabold text-purple-700 animate-pulse">
@@ -21,8 +39,8 @@ const SoftwareSolutions = () => {
           </p>
           {content.bullets.map((b, i) => (
             <div key={i} className="mb-8">
-              <h3 className="text-2xl font-bold mb-2">
-                {b.heading}
+              <h3 className="text-2xl font-bold mb-2 text-blue-900">
+                <RevealText text={b.heading} />
               </h3>
               <p className="text-gray-600 text-lg">{b.content}</p>
             </div>

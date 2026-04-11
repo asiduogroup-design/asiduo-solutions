@@ -1,32 +1,46 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
+import ItalianNavbar from "./components/ItalianNavbar";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import SoftwareSolutions from "./pages/SoftwareSolutions";
+import ItalianSoftwareSolutions from "./pages/ItalianSoftwareSolutions";
 import LanguageSelector from "./components/LanguageSelector";
 import HomeItalian from "./pages/HomeItalian";
 import Home from "./pages/Home";
 import KlarnaDashboard from "./pages/KlarnaDashboard";
+import NexiPayment from "./pages/NexiPayment";
 
 function AppRoutes({ lang, setLang }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
+
+    // If Italian selected → ensure URL starts with /it
     if (lang === "it" && !location.pathname.startsWith("/it")) {
       navigate("/it", { replace: true });
-    } else if (lang === "en" && location.pathname === "/it") {
+    }
+
+    // If English selected → redirect any /it page back to English home
+    if (lang === "en" && location.pathname.startsWith("/it")) {
       navigate("/", { replace: true });
     }
-  }, [lang, navigate, location.pathname]);
+
+  }, [lang, location.pathname, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+      {lang === "it" ? <ItalianNavbar /> : <Navbar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/software-solutions" element={<SoftwareSolutions />} />
+
         <Route path="/it" element={<HomeItalian />} />
-        <Route path="/klarna-dashboard" element={<KlarnaDashboard />} />
+        <Route path="/it/software-solutions" element={<ItalianSoftwareSolutions />} />
+        <Route path="/it/klarna-dashboard" element={<KlarnaDashboard />} />
+        <Route path="/it/nexi-payment" element={<NexiPayment />} />
+        <Route path="/it/payment-success" element={<PaymentSuccess />} />
       </Routes>
     </div>
   );
@@ -34,9 +48,11 @@ function AppRoutes({ lang, setLang }) {
 
 function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("lang_pref") || "");
+
   if (!lang) {
     return <LanguageSelector onSelect={setLang} />;
   }
+
   return (
     <Router>
       <AppRoutes lang={lang} setLang={setLang} />

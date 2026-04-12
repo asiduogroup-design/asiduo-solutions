@@ -40,7 +40,6 @@ function AppRoutes({ lang, setLang }) {
         <Route path="/it/software-solutions" element={<ItalianSoftwareSolutions />} />
         <Route path="/it/klarna-dashboard" element={<KlarnaDashboard />} />
         <Route path="/it/nexi-payment" element={<NexiPayment />} />
-        <Route path="/it/payment-success" element={<PaymentSuccess />} />
       </Routes>
     </div>
   );

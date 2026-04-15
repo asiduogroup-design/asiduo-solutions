@@ -1,75 +1,112 @@
+require('dotenv').config()
+
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const axios = require('axios')
-require('dotenv').config()
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const User = require('./models/User')
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
-// Test route
+const JWT_SECRET = process.env.JWT_SECRET
 app.get('/', (req, res) => {
   res.send('Server is running 🚀')
 })
 
-// Klarna session endpoint
-app.post('/api/klarna/session', async (req, res) => {
+/* ================= REGISTER ================= */
+
+app.post('/api/register', async (req, res) => {
+
+  const { email, password } = req.body
+
   try {
-    // Example order data (customize as needed)
-    const orderData = {
-      purchase_country: 'IT',
-      purchase_currency: 'EUR',
-      locale: 'it-IT',
-      order_amount: 10000, // in cents (e.g., 100.00 EUR)
-      order_tax_amount: 2000,
-      order_lines: [
-        {
-          type: 'physical',
-          reference: '123456789',
-          name: 'Servizio Software',
-          quantity: 1,
-          unit_price: 10000,
-          tax_rate: 2000,
-          total_amount: 10000,
-          total_tax_amount: 2000,
-        },
-      ],
-      merchant_urls: {
-        terms: 'https://yourdomain.com/terms',
-        checkout: 'https://yourdomain.com/checkout',
-        confirmation: 'https://yourdomain.com/confirmation',
-        push: 'https://yourdomain.com/api/klarna/push',
-      },
-    };
 
-    const response = await axios.post(
-      `${KLARNA_API_URL}/checkout/v3/orders`,
-      orderData,
-      {
-        auth: {
-          username: KLARNA_USERNAME,
-          password: KLARNA_PASSWORD,
-        },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const existingUser = await User.findOne({ email })
 
-    res.json(response.data);
-  } catch (error) {
-    console.error('Klarna session error:', error.response?.data || error.message)
-    res.status(500).json({ error: 'Failed to create Klarna session' })
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" })
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const user = new User({
+      email,
+      password: hashedPassword
+    })
+
+    await user.save()
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    )
+
+    res.json({
+      message: "User registered",
+      token
+    })
+
+  } catch (err) {
+
+    console.error(err)
+    res.status(500).json({ error: "Server error" })
+
   }
+
 })
 
-// Connect MongoDB
+/* ================= LOGIN ================= */
+
+app.post('/api/login', async (req, res) => {
+
+  const { email, password } = req.body
+
+  try {
+
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" })
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+
+    if (!match) {
+      return res.status(401).json({ error: "Invalid email or password" })
+    }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    )
+
+    res.json({
+      message: "Login successful",
+      token
+    })
+
+  } catch (err) {
+
+    console.error(err)
+    res.status(500).json({ error: "Server error" })
+
+  }
+
+})
+
+/* ================= MONGODB ================= */
+
 mongoose.connect(process.env.MONGO_URL)
-  .then(() => console.log('MongoDB Connected ✅'))
+  .then(() => console.log("MongoDB Connected ✅"))
   .catch(err => console.log(err))
 
 app.listen(5000, () => {
-  console.log('Server running on port 5000 🚀')
+  console.log("Server running on port 5000 🚀")
 })

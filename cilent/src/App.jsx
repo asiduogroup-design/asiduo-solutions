@@ -7,10 +7,12 @@ import ItalianSoftwareSolutions from "./pages/ItalianSoftwareSolutions";
 import LanguageSelector from "./components/LanguageSelector";
 import HomeItalian from "./pages/HomeItalian";
 import Home from "./pages/Home";
-import KlarnaDashboard from "./pages/KlarnaDashboard";
 import NexiPayment from "./pages/NexiPayment";
-
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
+import ItalianLoginPage from "./pages/ItalianLoginPage";
 function AppRoutes({ lang, setLang }) {
+  
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,12 +36,19 @@ function AppRoutes({ lang, setLang }) {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/software-solutions" element={<SoftwareSolutions />} />
-
+        <Route path="/software-solutions" element={<SoftwareSolutions />} />        
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/it/login" element={<ItalianLoginPage />} />
         <Route path="/it" element={<HomeItalian />} />
         <Route path="/it/software-solutions" element={<ItalianSoftwareSolutions />} />
-        <Route path="/it/klarna-dashboard" element={<KlarnaDashboard />} />
-        <Route path="/it/nexi-payment" element={<NexiPayment />} />
+        <Route
+  path="/it/nexi-payment"
+  element={
+    <ProtectedRoute>
+      <NexiPayment />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 
 const AnimatedBar = () => (
-  <div className="relative h-2 w-32 mt-2 mb-6 overflow-hidden">
+  <div className="relative h-2 w-24 sm:w-32 md:w-40 lg:w-56 mt-2 mb-6 overflow-hidden">
     <div className="absolute left-0 top-0 h-2 w-full rounded bg-gradient-to-r from-pink-400 via-purple-400 to-green-400 animate-barShimmer" />
     <style>{`
       @keyframes barShimmer {

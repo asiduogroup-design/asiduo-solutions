@@ -18,7 +18,7 @@ const RevealText = ({ text, delay = 30, className = "" }) => {
   }, []);
 
   return (
-    <span className={className} key={text}>
+    <span className={`break-words inline-block text-base sm:text-lg md:text-xl ${className}`} key={text}>
       {text.split("").map((char, i) => (
         <span
           key={text + i}

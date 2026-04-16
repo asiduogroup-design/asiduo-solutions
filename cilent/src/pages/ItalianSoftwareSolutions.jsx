@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const ItalianSoftwareSolutions = () => {
   const [selected, setSelected] = useState("Sviluppo Software Personalizzato");
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const content = italianContent[selected];
   const navigate = useNavigate();
 
@@ -14,9 +15,15 @@ const ItalianSoftwareSolutions = () => {
     <div className="flex flex-col md:flex-row gap-8 p-8">
       {/* Home icon inside main card, top-left */}
       {/* Home icon above Features italianSidebar */}
-      <div className="relative">
-        <div className="bg-white shadow-lg rounded-lg p-4">
-          <div className="flex items-center justify-center gap-4 mb-2">
+      <div
+        className={`relative w-full mx-auto md:mx-0 transition-all duration-300 ${desktopSidebarOpen
+          ? "md:w-1/3 max-w-xs md:max-w-xs lg:max-w-sm"
+          : "md:w-0 md:max-w-0 md:overflow-visible"}`}
+      >
+        <div
+          className={`bg-white shadow-lg rounded-lg p-4 transition-all duration-300 ${desktopSidebarOpen ? "" : "md:bg-transparent md:shadow-none md:p-0"}`}
+        >
+          <div className={`flex items-center justify-center gap-4 mb-2 ${desktopSidebarOpen ? "" : "md:hidden"}`}>
 
   {/* Home Icon */}
   <span
@@ -36,11 +43,16 @@ const ItalianSoftwareSolutions = () => {
   </button>
 
 </div>
-          <SidebarItalian selected={selected} onSelect={setSelected} />
+          <SidebarItalian
+            selected={selected}
+            onSelect={setSelected}
+            desktopOpen={desktopSidebarOpen}
+            setDesktopOpen={setDesktopSidebarOpen}
+          />
         </div>
       </div>
 
-      <div className="flex-1 bg-white rounded-lg shadow-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      <div className="flex-1 min-w-0 bg-white rounded-lg shadow-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         <div>
           <h2 className="text-3xl font-extrabold text-purple-700 animate-pulse">
             {selected}

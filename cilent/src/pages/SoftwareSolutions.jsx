@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const SoftwareSolutions = () => {
   const [selected, setSelected] = useState("Custom Software Development");
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const content = featureContent[selected];
   const navigate = useNavigate();
 
@@ -14,9 +15,15 @@ const SoftwareSolutions = () => {
     <div className="flex flex-col md:flex-row gap-4 md:gap-8 p-2 sm:p-4 md:p-8 w-full">
       {/* Home icon inside main card, top-left */}
       {/* Home icon above Features sidebar */}
-      <div className="relative w-full md:w-1/3 max-w-xs md:max-w-xs lg:max-w-sm mx-auto md:mx-0">
-        <div className="bg-white shadow-lg rounded-lg p-4">
-          <div className="flex justify-center mb-2">
+      <div
+        className={`relative w-full mx-auto md:mx-0 transition-all duration-300 ${desktopSidebarOpen
+          ? "md:w-1/3 max-w-xs md:max-w-xs lg:max-w-sm"
+          : "md:w-0 md:max-w-0 md:overflow-visible"}`}
+      >
+        <div
+          className={`bg-white shadow-lg rounded-lg p-4 transition-all duration-300 ${desktopSidebarOpen ? "" : "md:bg-transparent md:shadow-none md:p-0"}`}
+        >
+          <div className={`flex justify-center mb-2 ${desktopSidebarOpen ? "" : "md:hidden"}`}>
             <span
               className="inline-block cursor-pointer"
               title="Back to Home"
@@ -25,10 +32,15 @@ const SoftwareSolutions = () => {
               <i className="fa-solid fa-house" style={{ color: 'orange', fontSize: '2rem' }}></i>
             </span>
           </div>
-          <Sidebar selected={selected} onSelect={setSelected} />
+          <Sidebar
+            selected={selected}
+            onSelect={setSelected}
+            desktopOpen={desktopSidebarOpen}
+            setDesktopOpen={setDesktopSidebarOpen}
+          />
         </div>
       </div>
-      <div className="flex-1 bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-start w-full">
+      <div className="flex-1 min-w-0 bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-start w-full">
         <div>
           <h2 className="text-3xl font-extrabold text-purple-700 animate-pulse">
             {selected}

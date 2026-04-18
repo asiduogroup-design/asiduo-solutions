@@ -70,15 +70,11 @@ export default function InteractiveHomePage({ locale = "en" }) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         >
+          <source src="/videos/Cinematic_Workspace_Loop_Video.mp4" type="video/mp4" />
           <source
             src="/videos/Software_Electrical_Graphic_Design_Background_Video.mp4"
             type="video/mp4"
           />
-          <source
-            src="/videos/software_electrical_graphic_design_background_video.mp4"
-            type="video/mp4"
-          />
-          <source src="/videos/Cinematic_Workspace_Loop_Video.mp4" type="video/mp4" />
         </video>
 
         <div className="absolute inset-0 bg-black/70" />

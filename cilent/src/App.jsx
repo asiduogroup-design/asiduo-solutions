@@ -11,6 +11,8 @@ import NexiPayment from "./pages/NexiPayment";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ItalianLoginPage from "./pages/ItalianLoginPage";
+import ContactPage from "./pages/ContactPage";
+import ContactPageItalian from "./pages/ContactPageItalian";
 function AppRoutes({ lang, setLang }) {
   
   const navigate = useNavigate();
@@ -36,10 +38,12 @@ function AppRoutes({ lang, setLang }) {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/software-solutions" element={<SoftwareSolutions />} />        
         <Route path="/login" element={<LoginPage />} />
         <Route path="/it/login" element={<ItalianLoginPage />} />
         <Route path="/it" element={<HomeItalian />} />
+        <Route path="/it/contact" element={<ContactPageItalian />} />
         <Route path="/it/software-solutions" element={<ItalianSoftwareSolutions />} />
         <Route
   path="/it/nexi-payment"

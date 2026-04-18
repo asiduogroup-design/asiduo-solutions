@@ -1,9 +1,15 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
-const Topbar = () => (
-  <div className="w-full py-3 overflow-hidden bg-gradient-to-r from-green-700 via-green-500 to-green-400">
-    <div className="whitespace-nowrap animate-scroll px-4 text-sm md:text-base font-semibold text-white">
+const Topbar = ({ isOverlayRoute }) => (
+  <div
+    className={`w-full overflow-hidden py-2 sm:py-3 ${
+      isOverlayRoute
+        ? "bg-transparent"
+        : "bg-gradient-to-r from-green-700 via-green-500 to-green-400"
+    }`}
+  >
+    <div className="whitespace-nowrap animate-scroll px-4 text-xs font-semibold text-white sm:text-sm md:text-base">
       <span className="mx-8">Benvenuti in Asiduo Solutions!</span>
       <span className="mx-8">
         Offriamo soluzioni software, consulenza per progetti elettrici e servizi
@@ -31,27 +37,93 @@ const Topbar = () => (
 
 const ItalianNavbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [contactNavHasBackground, setContactNavHasBackground] = useState(false);
+  const lastScrollYRef = useRef(0);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isContactOverlayRoute = location.pathname === "/it/contact";
+  const isOverlayRoute = location.pathname === "/it" || isContactOverlayRoute;
 
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isContactOverlayRoute) {
+      setContactNavHasBackground(false);
+      return undefined;
+    }
+
+    const getHeroHeight = () => {
+      const heroSection = document.getElementById("contact-hero-section");
+      return heroSection?.offsetHeight || Math.round(window.innerHeight * 0.65);
+    };
+
+    let heroHeight = getHeroHeight();
+
+    const handleResize = () => {
+      heroHeight = getHeroHeight();
+    };
+
+    const handleScroll = () => {
+      const currentY = window.scrollY || 0;
+      const isScrollingUp = currentY < lastScrollYRef.current;
+      const withinHero = currentY < Math.max(heroHeight - 120, 120);
+
+      if (isScrollingUp) {
+        setContactNavHasBackground(true);
+      } else {
+        setContactNavHasBackground(withinHero);
+      }
+
+      lastScrollYRef.current = currentY;
+    };
+
+    lastScrollYRef.current = window.scrollY || 0;
+    setContactNavHasBackground(true);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isContactOverlayRoute]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/it/login");
   };
 
-  return (
-    <>
-      <Topbar />
+  const desktopLinkClass = isOverlayRoute
+    ? "text-white/90 hover:text-sky-300"
+    : "text-purple-700 hover:text-pink-400";
 
-      <nav className="w-full flex items-center justify-between px-4 md:px-8 py-3 bg-white shadow-md relative">
+  const navBackgroundClass = isContactOverlayRoute
+    ? contactNavHasBackground
+      ? "bg-slate-900/85 backdrop-blur-md shadow-lg"
+      : "bg-transparent shadow-none"
+    : isOverlayRoute
+      ? "bg-transparent shadow-none"
+      : "bg-white shadow-md";
+
+  return (
+    <div className={isOverlayRoute ? "fixed inset-x-0 top-0 z-[80]" : "relative z-40"}>
+      <Topbar isOverlayRoute={isOverlayRoute} />
+
+      <nav
+        className={`relative flex w-full items-center justify-between px-3 py-2 sm:px-4 md:px-8 ${navBackgroundClass}`}
+      >
 
         {/* Logo */}
         <Link to="/it" className="flex items-center">
           <img
             src="/images/logo.png"
             alt="Asiduo Solutions"
-            className="h-[70px] sm:h-[90px] md:h-[110px] w-auto drop-shadow-lg transition-transform duration-200 hover:scale-105"
+            className="h-[56px] sm:h-[70px] md:h-[84px] w-auto drop-shadow-lg transition-transform duration-200 hover:scale-105"
           />
         </Link>
 
@@ -60,16 +132,16 @@ const ItalianNavbar = () => {
 
           <Link
             to="/it/software-solutions"
-            className="text-purple-700 font-bold text-base md:text-lg tracking-wide hover:text-pink-400 transition"
+            className={`${desktopLinkClass} font-bold text-base md:text-lg tracking-wide transition`}
           >
             Soluzioni Software
           </Link>
 
-          <span className="text-purple-700 font-bold text-base md:text-lg tracking-wide hover:text-pink-400 transition cursor-pointer">
+          <span className={`${desktopLinkClass} font-bold text-base md:text-lg tracking-wide transition cursor-pointer`}>
             Consulenza Progetti Elettrici
           </span>
 
-          <span className="text-purple-700 font-bold text-base md:text-lg tracking-wide hover:text-pink-400 transition cursor-pointer">
+          <span className={`${desktopLinkClass} font-bold text-base md:text-lg tracking-wide transition cursor-pointer`}>
             Progettazione Grafica
           </span>
 
@@ -83,7 +155,9 @@ const ItalianNavbar = () => {
               <img
                 src="/images/login-icon.png"
                 alt="Login"
-                className="h-[40px] w-[40px] md:h-[45px] md:w-[45px] object-contain rounded-full border border-blue-200 shadow-md transition-transform hover:scale-110"
+                className={`h-[38px] w-[38px] md:h-[44px] md:w-[44px] object-contain rounded-full shadow-md transition-transform hover:scale-110 ${
+                  isOverlayRoute ? "border border-white/60" : "border border-blue-200"
+                }`}
               />
             </Link>
           )}
@@ -104,9 +178,10 @@ const ItalianNavbar = () => {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="focus:outline-none"
+            aria-label="Toggle menu"
           >
             <svg
-              className="h-7 w-7 text-gray-700"
+              className={`h-7 w-7 ${isOverlayRoute ? "text-white" : "text-gray-700"}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -123,28 +198,44 @@ const ItalianNavbar = () => {
 
         {/* Mobile Dropdown */}
         {menuOpen && (
-          <div className="absolute top-full left-0 w-full bg-white shadow-lg z-50 flex flex-col items-center py-4 md:hidden">
+          <div
+            className={`absolute left-0 top-full z-50 flex w-full flex-col items-center py-4 md:hidden ${
+              isOverlayRoute ? "bg-slate-950/90 backdrop-blur-md" : "bg-white shadow-lg"
+            }`}
+          >
 
             <Link
               to="/it/software-solutions"
-              className="w-full text-center py-3 text-purple-700 font-bold text-lg hover:bg-purple-50"
+              className={`w-full text-center py-3 text-lg font-bold ${
+                isOverlayRoute ? "text-white hover:bg-white/10" : "text-purple-700 hover:bg-purple-50"
+              }`}
               onClick={() => setMenuOpen(false)}
             >
               Soluzioni Software
             </Link>
 
-            <span className="w-full text-center py-3 text-purple-700 font-bold text-lg hover:bg-purple-50 cursor-pointer">
+            <span
+              className={`w-full text-center py-3 text-lg font-bold cursor-pointer ${
+                isOverlayRoute ? "text-white hover:bg-white/10" : "text-purple-700 hover:bg-purple-50"
+              }`}
+            >
               Consulenza Progetti Elettrici
             </span>
 
-            <span className="w-full text-center py-3 text-purple-700 font-bold text-lg hover:bg-purple-50 cursor-pointer">
+            <span
+              className={`w-full text-center py-3 text-lg font-bold cursor-pointer ${
+                isOverlayRoute ? "text-white hover:bg-white/10" : "text-purple-700 hover:bg-purple-50"
+              }`}
+            >
               Progettazione Grafica
             </span>
 
             {!token && (
               <Link
                 to="/it/login"
-                className="w-full text-center py-3 text-blue-600 font-semibold hover:bg-blue-50"
+                className={`w-full text-center py-3 font-semibold ${
+                  isOverlayRoute ? "text-sky-300 hover:bg-white/10" : "text-blue-600 hover:bg-blue-50"
+                }`}
                 onClick={() => setMenuOpen(false)}
               >
                 Login
@@ -154,7 +245,9 @@ const ItalianNavbar = () => {
             {token && (
               <button
                 onClick={handleLogout}
-                className="w-full text-center py-3 text-red-600 font-semibold hover:bg-red-50"
+                className={`w-full text-center py-3 font-semibold ${
+                  isOverlayRoute ? "text-red-300 hover:bg-white/10" : "text-red-600 hover:bg-red-50"
+                }`}
               >
                 Logout
               </button>
@@ -163,7 +256,7 @@ const ItalianNavbar = () => {
           </div>
         )}
       </nav>
-    </>
+    </div>
   );
 };
 

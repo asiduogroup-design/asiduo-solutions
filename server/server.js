@@ -27,6 +27,10 @@ if (!JWT_SECRET || !MONGO_URL) {
 const defaultAllowedOrigins = ['https://asiduo.com', 'https://www.asiduo.com']
 const allowedOrigins = CORS_ORIGINS.length > 0 ? CORS_ORIGINS : defaultAllowedOrigins
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const normalizeEmail = (value) => String(value || '').trim().toLowerCase()
+const normalizePassword = (value) => String(value || '').trim()
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) {
@@ -71,16 +75,25 @@ app.post('/api/register', async (req, res) => {
   const { email, password } = req.body
 
   try {
-    const existingUser = await User.findOne({ email })
+    const normalizedEmail = normalizeEmail(email)
+    const normalizedPassword = normalizePassword(password)
+
+    if (!normalizedEmail || !normalizedPassword) {
+      return res.status(400).json({ error: 'Email and password are required' })
+    }
+
+    const existingUser = await User.findOne({
+      email: { $regex: `^${escapeRegex(normalizedEmail)}$`, $options: 'i' },
+    })
 
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' })
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
+    const hashedPassword = await bcrypt.hash(normalizedPassword, 10)
 
     const user = new User({
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     })
 
@@ -108,13 +121,22 @@ app.post('/api/login', async (req, res) => {
   const { email, password } = req.body
 
   try {
-    const user = await User.findOne({ email })
+    const normalizedEmail = normalizeEmail(email)
+    const normalizedPassword = normalizePassword(password)
+
+    if (!normalizedEmail || !normalizedPassword) {
+      return res.status(400).json({ error: 'Email and password are required' })
+    }
+
+    const user = await User.findOne({
+      email: { $regex: `^${escapeRegex(normalizedEmail)}$`, $options: 'i' },
+    })
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' })
     }
 
-    const match = await bcrypt.compare(password, user.password)
+    const match = await bcrypt.compare(normalizedPassword, user.password)
 
     if (!match) {
       return res.status(401).json({ error: 'Invalid email or password' })

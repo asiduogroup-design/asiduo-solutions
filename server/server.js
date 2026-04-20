@@ -29,7 +29,7 @@ const allowedOrigins = CORS_ORIGINS.length > 0 ? CORS_ORIGINS : defaultAllowedOr
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const normalizeEmail = (value) => String(value || '').trim().toLowerCase()
-const normalizePassword = (value) => String(value || '').trim()
+const normalizePassword = (value) => String(value || '')
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -136,7 +136,22 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' })
     }
 
-    const match = await bcrypt.compare(normalizedPassword, user.password)
+    let match = false
+    const storedPassword = String(user.password || '')
+    const isBcryptHash = /^\$2[abxy]?\$\d{2}\$/.test(storedPassword)
+
+    if (isBcryptHash) {
+      match = await bcrypt.compare(normalizedPassword, storedPassword)
+    } else {
+      // Backward-compatible login for legacy users whose passwords were stored
+      // before bcrypt hashing was introduced.
+      match = normalizedPassword === storedPassword
+
+      if (match) {
+        user.password = await bcrypt.hash(normalizedPassword, 10)
+        await user.save()
+      }
+    }
 
     if (!match) {
       return res.status(401).json({ error: 'Invalid email or password' })

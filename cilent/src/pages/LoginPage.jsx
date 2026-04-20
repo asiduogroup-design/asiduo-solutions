@@ -40,7 +40,18 @@ export default function LoginPage() {
 
     } catch (err) {
 
-      setError(err.response?.data?.error || "Unable to connect to server")
+      const statusCode = err.response?.status
+      const serverError = err.response?.data?.error
+
+      if (statusCode === 401) {
+        setError("Invalid email or password. If this account was created only on local DB, register once on production.")
+      } else if (statusCode === 405) {
+        setError("API endpoint blocked (405). Backend URL or deployment route is misconfigured.")
+      } else if (serverError) {
+        setError(serverError)
+      } else {
+        setError("Unable to connect to server")
+      }
 
     }
 

@@ -8,6 +8,9 @@ import LanguageSelector from "./components/LanguageSelector";
 import HomeItalian from "./pages/HomeItalian";
 import Home from "./pages/Home";
 import NexiPayment from "./pages/NexiPayment";
+import CountrySelectionPage from "./pages/CountrySelectionPage";
+import RazorpayPayment from "./pages/RazorpayPayment";
+import StripePayment from "./pages/StripePayment";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ItalianLoginPage from "./pages/ItalianLoginPage";
@@ -41,10 +44,58 @@ function AppRoutes({ lang, setLang }) {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/software-solutions" element={<SoftwareSolutions />} />        
         <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/country-selection"
+          element={
+            <ProtectedRoute>
+              <CountrySelectionPage locale="en" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/razorpay"
+          element={
+            <ProtectedRoute>
+              <RazorpayPayment locale="en" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/stripe"
+          element={
+            <ProtectedRoute>
+              <StripePayment locale="en" />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/it/login" element={<ItalianLoginPage />} />
         <Route path="/it" element={<HomeItalian />} />
         <Route path="/it/contact" element={<ContactPageItalian />} />
         <Route path="/it/software-solutions" element={<ItalianSoftwareSolutions />} />
+        <Route
+          path="/it/country-selection"
+          element={
+            <ProtectedRoute redirectTo="/it/login">
+              <CountrySelectionPage locale="it" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/it/payment/razorpay"
+          element={
+            <ProtectedRoute redirectTo="/it/login">
+              <RazorpayPayment locale="it" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/it/payment/stripe"
+          element={
+            <ProtectedRoute redirectTo="/it/login">
+              <StripePayment locale="it" />
+            </ProtectedRoute>
+          }
+        />
         <Route
   path="/it/nexi-payment"
   element={

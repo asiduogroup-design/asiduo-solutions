@@ -67,7 +67,7 @@ export default function LanguageSelector({ onSelect }) {
 
       <div className="absolute inset-0 bg-black/55" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen min-h-dvh w-full max-w-5xl flex-col items-center justify-center px-4 py-8 sm:px-6 sm:py-10 md:px-8">
+      <div className="safe-mobile-padding relative z-10 mx-auto flex min-h-screen min-h-dvh w-full max-w-5xl flex-col items-center justify-center py-8 sm:px-6 sm:py-10 md:px-8">
         <h1 className="mb-5 w-full max-w-3xl text-center text-2xl font-extrabold leading-tight text-white drop-shadow-lg min-h-[4.5rem] sm:mb-8 sm:min-h-[5rem] sm:text-4xl md:min-h-[6rem] md:text-5xl">
           {typedHeading}
         </h1>

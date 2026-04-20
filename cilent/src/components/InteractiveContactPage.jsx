@@ -86,7 +86,7 @@ export default function InteractiveContactPage({ locale = "en" }) {
     <main className="w-full overflow-x-hidden bg-slate-950 text-white">
       <section
         id="contact-hero-section"
-        className="relative overflow-hidden bg-[#020611] px-4 pb-14 pt-32 sm:px-6 sm:pb-16 sm:pt-36 md:px-12 md:pt-40 lg:px-16"
+        className="safe-mobile-padding relative overflow-hidden bg-[#020611] pb-14 pt-32 sm:px-6 sm:pb-16 sm:pt-36 md:px-12 md:pt-40 lg:px-16"
       >
         <div
           aria-hidden="true"
@@ -126,7 +126,7 @@ export default function InteractiveContactPage({ locale = "en" }) {
         </div>
       </section>
 
-      <section ref={formSectionRef} className="bg-slate-100 px-4 py-10 sm:px-6 sm:py-12 md:px-12 lg:px-16">
+      <section ref={formSectionRef} className="safe-mobile-padding bg-slate-100 py-10 sm:px-6 sm:py-12 md:px-12 lg:px-16">
         <div className="mx-auto grid w-full max-w-6xl gap-5 rounded-3xl bg-white/95 p-2.5 shadow-2xl sm:p-3 md:grid-cols-[1.25fr_1fr] md:gap-6 md:p-5">
           <div className="rounded-3xl bg-gradient-to-br from-sky-500 to-blue-500 p-5 sm:p-7 md:p-8">
             <h2 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl">{text.formTitle}</h2>

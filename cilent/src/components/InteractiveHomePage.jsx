@@ -16,6 +16,7 @@ const COPY = {
     ],
     getInTouchLabel: "Get In Touch",
     changeLanguageLabel: "Change Language",
+    payNowLabel: "Pay Now",
   },
   it: {
     heroTagline: "PIATTAFORMA UNICA PER PORTARE ONLINE IL TUO BUSINESS",
@@ -31,6 +32,7 @@ const COPY = {
     ],
     getInTouchLabel: "Contattaci",
     changeLanguageLabel: "Cambia lingua / Change Language",
+    payNowLabel: "Paga Ora",
   },
 };
 
@@ -56,11 +58,32 @@ export default function InteractiveHomePage({ locale = "en" }) {
     navigate(locale === "it" ? "/it/contact" : "/contact");
   };
 
+  const handlePayNow = () => {
+    const token = localStorage.getItem("token");
+    const countrySelectionPath = locale === "it" ? "/it/country-selection" : "/country-selection";
+
+    if (!token) {
+      const loginPath = locale === "it" ? "/it/login" : "/login";
+      navigate(`${loginPath}?redirect=${encodeURIComponent(countrySelectionPath)}`);
+      return;
+    }
+
+    navigate(countrySelectionPath);
+  };
+
   const activeFeature = text.rotatingFeatures[activeFeatureIndex] || text.rotatingFeatures[0];
 
   return (
     <main className="w-full overflow-x-hidden bg-slate-950 text-white">
-      <section className="relative isolate flex min-h-screen min-h-dvh items-center justify-center overflow-hidden px-4 pb-10 pt-36 sm:px-6 sm:pb-12 sm:pt-40 md:px-12 md:pt-44 lg:px-16">
+      <section className="safe-mobile-padding relative isolate flex min-h-screen min-h-dvh items-center justify-center overflow-hidden pb-24 pt-36 sm:px-6 sm:pb-12 sm:pt-40 md:px-12 md:pt-44 lg:px-16">
+        <button
+          type="button"
+          onClick={handlePayNow}
+          className="fixed bottom-4 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-[220px] -translate-x-1/2 rounded-full border border-sky-300/80 bg-sky-500/25 px-4 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-sky-500/40 focus:outline-none focus:ring-2 focus:ring-sky-200 sm:bottom-auto sm:left-auto sm:right-5 sm:top-1/2 sm:w-auto sm:max-w-none sm:-translate-x-0 sm:-translate-y-1/2 sm:px-6 sm:text-base"
+        >
+          {text.payNowLabel}
+        </button>
+
         <video
           autoPlay
           loop
@@ -89,11 +112,10 @@ export default function InteractiveHomePage({ locale = "en" }) {
             {text.heroHeadingPrefix}
             <span
               key={activeFeature}
-              className="inline-block min-w-[8ch] text-sky-400 [animation:featureSwap_420ms_ease-out]"
+              className="inline-block min-w-[6ch] text-sky-400 [animation:featureSwap_420ms_ease-out] sm:min-w-[8ch]"
             >
               {activeFeature}
             </span>
-            <span className="text-sky-400">_</span>
           </h1>
 
           <div className="mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-10 sm:flex-row sm:items-center sm:gap-4">

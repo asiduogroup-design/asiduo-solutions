@@ -109,7 +109,7 @@ const Navbar = () => {
       <Topbar isOverlayRoute={isOverlayRoute} />
 
       <nav
-        className={`relative flex w-full items-center justify-between px-3 py-2 sm:px-4 md:px-8 ${navBackgroundClass}`}
+        className={`safe-mobile-padding relative flex w-full items-center justify-between py-2 sm:px-4 md:px-8 ${navBackgroundClass}`}
       >
 
         {/* Left: Logo */}
@@ -118,7 +118,9 @@ const Navbar = () => {
             <img
               src="/images/logo.png"
               alt="Logo"
-              className="h-[56px] sm:h-[70px] md:h-[84px] w-auto drop-shadow-lg transition-transform duration-200 hover:scale-105 bg-transparent"
+              loading="eager"
+              decoding="async"
+              className="h-[52px] w-auto bg-transparent drop-shadow-lg transition-transform duration-200 hover:scale-105 sm:h-[64px] md:h-[84px]"
             />
           </Link>
         </div>
@@ -144,14 +146,16 @@ const Navbar = () => {
         </div>
 
         {/* Right: Login / Logout */}
-        <div className="flex items-center gap-3">
+        <div className="ml-3 flex items-center gap-2 sm:gap-3">
 
           {!token && (
             <Link to="/login" title="Login">
               <img
                 src="/images/login-icon.png"
                 alt="Login"
-                className={`h-[38px] w-[38px] md:h-[46px] md:w-[46px] object-contain rounded-full shadow-md transition-transform duration-200 hover:scale-110 ${
+                loading="lazy"
+                decoding="async"
+                className={`h-[34px] w-[34px] rounded-full object-contain shadow-md transition-transform duration-200 hover:scale-110 sm:h-[38px] sm:w-[38px] md:h-[46px] md:w-[46px] ${
                   isOverlayRoute ? "border border-white/60" : "border-2 border-blue-200"
                 }`}
               />
@@ -161,18 +165,14 @@ const Navbar = () => {
           {token && (
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition font-semibold"
+              className="rounded-lg bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow transition hover:bg-red-600 sm:px-4"
             >
               Logout
             </button>
           )}
 
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
           <button
-            className="focus:outline-none"
+            className="md:hidden focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
@@ -195,7 +195,7 @@ const Navbar = () => {
         {/* Mobile Dropdown Menu */}
         {menuOpen && (
           <div
-            className={`absolute left-0 top-full z-50 flex w-full flex-col items-center py-4 md:hidden ${
+            className={`absolute left-0 top-full z-50 flex max-h-[72dvh] w-full flex-col items-center overflow-y-auto py-4 md:hidden ${
               isOverlayRoute ? "bg-slate-950/90 backdrop-blur-md" : "bg-white shadow-lg"
             }`}
           >

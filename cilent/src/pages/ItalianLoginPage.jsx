@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { buildApiUrl } from "../config/api";
 
 export default function ItalianLoginPage() {
 
@@ -8,6 +10,12 @@ export default function ItalianLoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const location = useLocation()
+
+  const getPostLoginPath = () => {
+    const redirect = new URLSearchParams(location.search).get("redirect")
+    return redirect && redirect.startsWith("/") ? redirect : "/it"
+  }
 
   const handleSubmit = async (e) => {
 
@@ -19,8 +27,8 @@ export default function ItalianLoginPage() {
     try {
 
       const url = isRegister
-        ? "http://localhost:5000/api/register"
-        : "http://localhost:5000/api/login"
+        ? buildApiUrl("/api/register")
+        : buildApiUrl("/api/login")
 
       const res = await axios.post(url, { email, password })
 
@@ -28,11 +36,11 @@ export default function ItalianLoginPage() {
 
       alert(isRegister ? "Registrazione completata!" : "Accesso effettuato!")
 
-      window.location.href = "/it"
+      window.location.href = getPostLoginPath()
 
     } catch (err) {
 
-      setError(err.response?.data?.error || "Errore del server")
+      setError(err.response?.data?.error || "Impossibile connettersi al server")
 
     }
 
@@ -42,11 +50,11 @@ export default function ItalianLoginPage() {
 
   return (
 
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-green-100 to-yellow-100 px-2">
+    <div className="safe-mobile-padding flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-green-100 to-yellow-100 py-20">
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-xl rounded-xl p-6 sm:p-10 w-full max-w-md flex flex-col gap-6"
+        className="flex w-full max-w-md flex-col gap-5 rounded-xl bg-white p-5 shadow-xl sm:gap-6 sm:p-8 md:p-10"
       >
 
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 text-center">

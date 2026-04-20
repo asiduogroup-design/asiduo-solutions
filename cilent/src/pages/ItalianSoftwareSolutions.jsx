@@ -12,7 +12,7 @@ const ItalianSoftwareSolutions = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 p-8">
+    <div className="safe-mobile-padding flex w-full flex-col gap-4 py-4 sm:gap-6 sm:py-6 md:flex-row md:gap-8 md:px-8 md:py-8">
       {/* Home icon inside main card, top-left */}
       {/* Home icon above Features italianSidebar */}
       <div
@@ -23,26 +23,26 @@ const ItalianSoftwareSolutions = () => {
         <div
           className={`bg-white shadow-lg rounded-lg p-4 transition-all duration-300 ${desktopSidebarOpen ? "" : "md:bg-transparent md:shadow-none md:p-0"}`}
         >
-          <div className={`flex items-center justify-center gap-4 mb-2 ${desktopSidebarOpen ? "" : "md:hidden"}`}>
+          <div className={`mb-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4 ${desktopSidebarOpen ? "" : "md:hidden"}`}>
 
-  {/* Home Icon */}
-  <span
-    className="inline-block cursor-pointer"
-    title="Torna alla Home"
-    onClick={() => navigate("/")}
-  >
-    <i className="fa-solid fa-house" style={{ color: "orange", fontSize: "2rem" }}></i>
-  </span>
+            {/* Home Icon */}
+            <span
+              className="inline-block cursor-pointer"
+              title="Torna alla Home"
+              onClick={() => navigate("/")}
+            >
+              <i className="fa-solid fa-house" style={{ color: "orange", fontSize: "2rem" }}></i>
+            </span>
 
-  {/* Nexi Payment Button */}
-  <button
-    onClick={() => navigate("/it/nexi-payment")}
-    className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
-  >
-    Paga con Nexi
-  </button>
+            {/* Nexi Payment Button */}
+            <button
+              onClick={() => navigate("/it/nexi-payment")}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-blue-700 sm:text-base"
+            >
+              Paga con Nexi
+            </button>
 
-</div>
+          </div>
           <SidebarItalian
             selected={selected}
             onSelect={setSelected}
@@ -52,34 +52,36 @@ const ItalianSoftwareSolutions = () => {
         </div>
       </div>
 
-      <div className="flex-1 min-w-0 bg-white rounded-lg shadow-lg p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      <div className="grid w-full min-w-0 flex-1 grid-cols-1 items-start gap-4 rounded-lg bg-white p-4 shadow-lg sm:p-6 md:grid-cols-2 md:gap-8 md:p-8">
         <div>
-          <h2 className="text-3xl font-extrabold text-purple-700 animate-pulse">
+          <h2 className="text-2xl font-extrabold text-purple-700 animate-pulse sm:text-3xl">
             {selected}
           </h2>
 
           <AnimatedBar />
 
-          <p className="text-gray-700 text-xl font-bold mt-6 mb-8 animate-fadeInSlow">
+          <p className="mb-6 mt-5 text-lg font-bold text-gray-700 animate-fadeInSlow sm:mb-8 sm:mt-6 sm:text-xl">
             {content.desc}
           </p>
 
           {content.bullets.map((b, i) => (
-            <div key={i} className="mb-8">
-              <h3 className="text-2xl font-bold mb-2 text-blue-900">
+            <div key={i} className="mb-6 sm:mb-8">
+              <h3 className="mb-2 text-xl font-bold text-blue-900 sm:text-2xl">
                 <RevealText text={b.heading} />
               </h3>
-              <p className="text-gray-600 text-lg">{b.content}</p>
+              <p className="text-base text-gray-600 sm:text-lg">{b.content}</p>
             </div>
           ))}
 
         </div>
 
-        <div className="flex justify-end items-start w-full">
+        <div className="mt-6 flex w-full items-start justify-center md:mt-0 md:justify-end">
           <img
             src={content.img}
             alt={selected}
-            className="w-full max-w-xs rounded-lg shadow-md animate-fadeIn"
+            loading="lazy"
+            decoding="async"
+            className="w-full max-w-[220px] rounded-lg shadow-md animate-fadeIn sm:max-w-xs md:max-w-sm"
           />
         </div>
       </div>

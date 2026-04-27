@@ -16,7 +16,7 @@ const COPY = {
     ],
     getInTouchLabel: "Get In Touch",
     changeLanguageLabel: "Change Language",
-    payNowLabel: "Pay Now",
+    payNowLabel: "Pay",
   },
   it: {
     heroTagline: "PIATTAFORMA UNICA PER PORTARE ONLINE IL TUO BUSINESS",
@@ -32,7 +32,7 @@ const COPY = {
     ],
     getInTouchLabel: "Contattaci",
     changeLanguageLabel: "Cambia lingua / Change Language",
-    payNowLabel: "Paga Ora",
+    payNowLabel: "Paga",
   },
 };
 
@@ -79,9 +79,11 @@ export default function InteractiveHomePage({ locale = "en" }) {
         <button
           type="button"
           onClick={handlePayNow}
-          className="fixed bottom-4 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-[220px] -translate-x-1/2 rounded-full border border-sky-300/80 bg-sky-500/25 px-4 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-sky-500/40 focus:outline-none focus:ring-2 focus:ring-sky-200 sm:bottom-auto sm:left-auto sm:right-5 sm:top-1/2 sm:w-auto sm:max-w-none sm:-translate-x-0 sm:-translate-y-1/2 sm:px-6 sm:text-base"
+          className="paynow-star fixed bottom-4 left-1/2 z-[70] -translate-x-1/2 focus:outline-none focus:ring-2 focus:ring-amber-200 sm:bottom-auto sm:left-auto sm:right-5 sm:top-1/2 sm:-translate-x-0 sm:-translate-y-1/2"
         >
-          {text.payNowLabel}
+          <span className="paynow-star__label">
+            <span className="paynow-star__text">{text.payNowLabel}</span>
+          </span>
         </button>
 
         <video
@@ -93,7 +95,7 @@ export default function InteractiveHomePage({ locale = "en" }) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         >
-          <source src="/videos/Cinematic_Workspace_Loop_Video.mp4" type="video/mp4" />
+          <source src="/videos/Animated_Background_Video_Generation.mp4" type="video/mp4" />
           <source
             src="/videos/Software_Electrical_Graphic_Design_Background_Video.mp4"
             type="video/mp4"
@@ -147,6 +149,131 @@ export default function InteractiveHomePage({ locale = "en" }) {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+
+        .paynow-star {
+          width: 148px;
+          aspect-ratio: 1;
+          border: 0;
+          cursor: pointer;
+          display: grid;
+          place-items: center;
+          position: fixed;
+          overflow: hidden;
+          isolation: isolate;
+          background: radial-gradient(
+            circle at 32% 24%,
+            #fff8c5 0%,
+            #ffd95a 34%,
+            #f59e0b 70%,
+            #d97706 100%
+          );
+          color: #fff;
+          clip-path: polygon(
+            50% 2%,
+            61% 35%,
+            97% 35%,
+            68% 56%,
+            79% 92%,
+            50% 70%,
+            21% 92%,
+            32% 56%,
+            3% 35%,
+            39% 35%
+          );
+          box-shadow: 0 0 18px rgba(251, 191, 36, 0.75), 0 0 40px rgba(245, 158, 11, 0.45);
+          transition: filter 220ms ease, box-shadow 220ms ease;
+          animation: payNowStarGlow 2.2s ease-in-out infinite;
+        }
+
+        .paynow-star::before {
+          content: "";
+          position: absolute;
+          inset: -75% -25%;
+          background: linear-gradient(
+            115deg,
+            transparent 35%,
+            rgba(255, 255, 255, 0.28) 44%,
+            rgba(255, 255, 255, 0.95) 50%,
+            rgba(255, 255, 255, 0.28) 56%,
+            transparent 66%
+          );
+          transform: translateX(-125%) rotate(16deg);
+          animation: payNowStarShine 2.9s linear infinite;
+          z-index: 0;
+          pointer-events: none;
+        }
+
+        .paynow-star:hover {
+          filter: brightness(1.06);
+        }
+
+        .paynow-star__label {
+          position: relative;
+          z-index: 1;
+          width: 82%;
+          display: grid;
+          place-items: center;
+          text-align: center;
+          text-transform: uppercase;
+          transform: rotate(-8deg) skewX(-4deg);
+        }
+
+        .paynow-star__label::before {
+          content: "";
+          position: absolute;
+          left: 7%;
+          right: 7%;
+          top: 38%;
+          height: 32%;
+          border-radius: 999px;
+          background: linear-gradient(180deg, rgba(255, 252, 229, 0.96) 0%, rgba(255, 239, 166, 0.94) 100%);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 2px 6px rgba(74, 17, 120, 0.18);
+          z-index: -1;
+        }
+
+        .paynow-star__text {
+          position: relative;
+          display: inline-block;
+          padding: 0.02rem 0.32rem;
+          letter-spacing: 0.06em;
+          font-weight: 900;
+          line-height: 1;
+          font-size: 1rem;
+          color: #3a0f64;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 3px rgba(58, 15, 100, 0.2);
+        }
+
+        @keyframes payNowStarShine {
+          0% {
+            transform: translateX(-125%) rotate(16deg);
+          }
+          40% {
+            transform: translateX(130%) rotate(16deg);
+          }
+          100% {
+            transform: translateX(130%) rotate(16deg);
+          }
+        }
+
+        @keyframes payNowStarGlow {
+          0%,
+          100% {
+            box-shadow: 0 0 14px rgba(251, 191, 36, 0.68), 0 0 34px rgba(245, 158, 11, 0.42);
+          }
+          50% {
+            box-shadow: 0 0 22px rgba(253, 224, 71, 0.88), 0 0 56px rgba(251, 191, 36, 0.64);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .paynow-star {
+            width: 124px;
+          }
+
+          .paynow-star__text {
+            font-size: 0.84rem;
           }
         }
       `}</style>

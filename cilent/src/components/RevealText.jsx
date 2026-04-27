@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 
 let styleInjected = false;
 
-const RevealText = ({ text, delay = 30, className = "" }) => {
+const RevealText = ({ text = "", delay = 30, className = "" }) => {
   useEffect(() => {
     if (!styleInjected) {
       const style = document.createElement("style");
       style.innerHTML = `
-        @keyframes fadeInChar {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes typeInChar {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `;
       document.head.appendChild(style);
@@ -18,15 +18,16 @@ const RevealText = ({ text, delay = 30, className = "" }) => {
   }, []);
 
   return (
-    <span className={`break-words inline-block text-base sm:text-lg md:text-xl ${className}`} key={text}>
+    <span className={`break-words inline-block ${className}`} key={text} aria-label={text}>
       {text.split("").map((char, i) => (
         <span
           key={text + i}
+          aria-hidden="true"
           style={{
             opacity: 0,
-            animation: `fadeInChar 0.3s forwards`,
+            animation: `typeInChar 0.08s linear forwards`,
             animationDelay: `${i * delay}ms`,
-            display: "inline-block"
+            display: "inline-block",
           }}
         >
           {char === " " ? "\u00A0" : char}
